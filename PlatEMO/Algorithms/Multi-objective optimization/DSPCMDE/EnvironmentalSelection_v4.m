@@ -3,6 +3,7 @@ function [Population, FrontNo, CrowdDis] = EnvironmentalSelection_v4(Population,
 %
 % strategy: Strategyv4 object for RL-based weight selection
 % progress: current progress (FE/maxFE)
+% Note: The weight 'a' is already calculated by Strategy v4 in the main algorithm
 
 %------------------------------- Copyright --------------------------------
 % Copyright (c) 2025 BIMK Group. You are free to use the PlatEMO for
@@ -28,23 +29,7 @@ function [Population, FrontNo, CrowdDis] = EnvironmentalSelection_v4(Population,
     [~, r2] = sortrows([FrontNo2', -CrowdDis2']);
     Rp(r2) = 1 : N1;
     
-    % Use RL-selected weight instead of fixed formula
-    % a is passed in but can be overridden by strategy
-    if ~isempty(strategy)
-        % Get current state
-        state = strategy.GetState(Population(1:min(N, N1)), struct('FE', 0, 'maxFE', 1));
-        
-        % Get weight action from previous step or select new one
-        if isempty(strategy.prev_action_w)
-            [action_w, ~] = strategy.SelectActions(state, progress);
-        else
-            action_w = strategy.prev_action_w;
-        end
-        
-        % Apply weight action to get new weight
-        a = strategy.ApplyWeightAction(action_w, progress);
-    end
-    
+    % Use RL-selected weight 'a' which was already calculated
     R_sum = (1 - a) * Rc + a * Rp;
     
     [~, Rank] = sort(R_sum);

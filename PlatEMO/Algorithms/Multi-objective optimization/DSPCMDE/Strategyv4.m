@@ -458,7 +458,7 @@ classdef Strategyv4 < handle
             
             % Update Head_op
             delta_op = q_op - target_op;
-            grad_head_op = next_hidden' * delta_op / obj.batch_size;
+            grad_head_op = hidden' * delta_op / obj.batch_size;
             obj.head_op_weights = obj.head_op_weights - obj.learning_rate * grad_head_op;
             
             % Update encoder (using combined gradients)
